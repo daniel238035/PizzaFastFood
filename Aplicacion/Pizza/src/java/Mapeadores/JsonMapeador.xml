@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Mapeadores.JsonMapeador">
+            
+    <resultMap id="JSON" type="Entidades.Json">
+        <id property="id" column="tb_producto_id"></id>
+        <result property="resultado" column="data"></result>     
+    </resultMap>
+    
+    <resultMap id="JSONCiudad" type="Entidades.Json">
+        <id property="id" column="tb_ciudad_id"></id>
+        <result property="resultado" column="data"></result>     
+    </resultMap>
+
+    <select id="ProductoMensualJSON" resultMap="JSON">       
+        select
+            tb_producto.tb_producto_id,
+            json_build_object(
+            'producto_id', tb_producto.tb_producto_id,
+            'producto_nom', tb_producto.tb_producto_nom,
+            'enero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end),
+            'febrero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end),
+            'marzo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end),
+            'abril', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end),
+            'mayo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end),
+            'junio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end),
+            'julio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end),
+            'agosto', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end),
+            'septiembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end),
+            'octubre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end),
+            'noviembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end),
+            'diciembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end)
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_producto.tb_producto_id,
+            tb_producto.tb_producto_nom
+            order by
+            tb_producto.tb_producto_id asc,
+            tb_producto.tb_producto_nom asc
+    </select>
+
+    <select id="ProductoTrimestralJSON" resultMap="JSON">
+        select
+            tb_producto.tb_producto_id,
+            json_build_object(
+            'producto_id', tb_producto.tb_producto_id,
+            'producto_nom', tb_producto.tb_producto_nom,
+            'q1', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end)),
+
+            'q2', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end)),
+
+            'q3', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end)),
+
+            'q4', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_producto.tb_producto_id,
+            tb_producto.tb_producto_nom
+            order by
+            tb_producto.tb_producto_id asc,
+            tb_producto.tb_producto_nom asc
+    </select>
+    
+    <select id="ProductoAnualJSON" resultMap="JSON">
+        select
+            tb_producto.tb_producto_id,
+            json_build_object(
+            'producto_id', tb_producto.tb_producto_id,
+            'producto_nom', tb_producto.tb_producto_nom,
+            'anio', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) + 
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+                    sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_producto.tb_producto_id,
+            tb_producto.tb_producto_nom
+            order by
+            tb_producto.tb_producto_id asc,
+            tb_producto.tb_producto_nom asc
+    </select>
+    
+    <!-- por CIUDAD -->
+    
+    <select id="CiudadMensualJSON" resultMap="JSONCiudad">
+        select
+            tb_ciudad.tb_ciudad_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'enero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end),
+            'febrero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end),
+            'marzo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end),
+            'abril', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end),
+            'mayo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end),
+            'junio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end),
+            'julio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end),
+            'agosto', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end),
+            'septiembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end),
+            'octubre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end),
+            'noviembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end),
+            'diciembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end)
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_ciudad.tb_ciudad_id,
+            tb_ciudad.tb_ciudad_nom
+            order by
+            tb_ciudad.tb_ciudad_id asc,
+            tb_ciudad.tb_ciudad_nom asc
+    </select>
+    
+    <select id="CiudadTrimestralJSON" resultMap="JSONCiudad">
+        select
+            tb_ciudad.tb_ciudad_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'q1', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) +
+	           sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end)),
+            'q2', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end)),
+            'q3', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end)),
+            'q4', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_ciudad.tb_ciudad_id,
+            tb_ciudad.tb_ciudad_nom
+            order by
+            tb_ciudad.tb_ciudad_id asc,
+            tb_ciudad.tb_ciudad_nom asc
+    </select>
+    
+    <select id="CiudadAnualJSON" resultMap="JSONCiudad">
+        select
+            tb_ciudad.tb_ciudad_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'anio', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) +
+	           sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015
+            group by
+            tb_ciudad.tb_ciudad_id,
+            tb_ciudad.tb_ciudad_nom
+            order by
+            tb_ciudad.tb_ciudad_id asc,
+            tb_ciudad.tb_ciudad_nom asc
+    </select>
+    
+    <!-- CP -->
+    
+    <select id="CPMensualJSON" resultMap="JSONCiudad">       
+        select
+            tb_producto.tb_producto_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'producto_nom', tb_producto.tb_producto_nom,
+            'enero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end),
+            'febrero', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end),
+            'marzo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end),
+            'abril', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end),
+            'mayo', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end),
+            'junio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end),
+            'julio', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end),
+            'agosto', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end),
+            'septiembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end),
+            'octubre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end),
+            'noviembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end),
+            'diciembre', sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end)
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015 AND 
+            tb_ciudad.tb_ciudad_nom = #{ciudad} AND tb_producto.tb_producto_nom = #{pizza}
+            group by
+            tb_ciudad.tb_ciudad_id,
+            tb_producto.tb_producto_id,
+            tb_producto.tb_producto_nom
+            order by
+            tb_producto.tb_producto_nom asc,
+            tb_producto.tb_producto_id asc,
+            tb_producto.tb_producto_nom asc
+    </select>
+    
+    <select id="CPTrimestralJSON" resultMap="JSONCiudad">
+        select
+            tb_ciudad.tb_ciudad_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'q1', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) +
+	           sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end)),
+            'q2', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end)),
+            'q3', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end)),
+            'q4', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015 AND 
+            tb_ciudad.tb_ciudad_nom = #{ciudad} AND tb_producto.tb_producto_nom = #{pizza}
+            group by
+            tb_producto.tb_producto_nom,
+            tb_ciudad.tb_ciudad_id,
+            tb_ciudad.tb_ciudad_nom
+            order by
+            tb_producto.tb_producto_nom asc,
+            tb_ciudad.tb_ciudad_id asc,
+            tb_ciudad.tb_ciudad_nom asc
+    </select>
+    
+    <select id="CPAnualJSON" resultMap="JSONCiudad">
+        select
+            tb_ciudad.tb_ciudad_id,
+            json_build_object(
+            'ciudad_id', tb_ciudad.tb_ciudad_id,
+            'ciudad_nom', tb_ciudad.tb_ciudad_nom,
+            'anio', (sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 1 then 1 else 0 end) +
+	           sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 2 then 1 else 0 end) +
+                   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 3 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 4 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 5 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 6 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 7 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 8 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 9 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 10 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 11 then 1 else 0 end) +
+		   sum(tb_detallepedido.tb_detallepedido_subtot * case when extract(month from tb_pedido.tb_pedido_fechor) = 12 then 1 else 0 end))
+            ) as data
+            from tb_detallepedido
+            inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+            inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+            inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+            where extract(year from tb_pedido.tb_pedido_fechor) = 2015 AND 
+            tb_ciudad.tb_ciudad_nom = #{ciudad} AND tb_producto.tb_producto_nom = #{pizza}
+            group by
+            tb_producto.tb_producto_nom,
+            tb_ciudad.tb_ciudad_id,
+            tb_ciudad.tb_ciudad_nom
+            order by
+            tb_producto.tb_producto_nom asc,
+            tb_ciudad.tb_ciudad_id asc,
+            tb_ciudad.tb_ciudad_nom asc
+    </select>    
+</mapper>

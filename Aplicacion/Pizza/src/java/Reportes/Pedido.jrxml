@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Pedido" language="groovy" pageWidth="226" pageHeight="425" columnWidth="186" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="4"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="cant" class="java.lang.Double"/>
+	<field name="preUni" class="java.lang.Double"/>
+	<field name="subTotal" class="java.math.BigDecimal"/>
+	<field name="oPedido.fech_hor" class="java.sql.Timestamp"/>
+	<field name="oPedido.cliente" class="java.lang.String"/>
+	<field name="oPedido.direccion" class="java.lang.String"/>
+	<field name="oPedido.importe" class="java.math.BigDecimal"/>
+	<field name="oPedido.pago" class="java.math.BigDecimal"/>
+	<field name="oPedido.vuelto" class="java.math.BigDecimal"/>
+	<field name="oPedido.oCiudad.nombre" class="java.lang.String"/>
+	<field name="oProducto.nombre" class="java.lang.String"/>
+	<group name="Cliente">
+		<groupExpression><![CDATA[$F{oPedido.oCiudad.nombre}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="112" splitType="Stretch">
+			<staticText>
+				<reportElement x="3" y="1" width="29" height="10" forecolor="#00CC66"/>
+				<textElement>
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PIZZERIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="11" width="39" height="12" forecolor="#FF3333"/>
+				<textElement>
+					<font size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FASTFOOD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="44" y="23" width="91" height="20" forecolor="#FFFFFF" backcolor="#333300"/>
+				<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Boleta Venta]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="129" y="0" width="57" height="10"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="49" width="52" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oPedido.cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="58" width="52" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{oPedido.fech_hor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="68" width="52" height="9"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oPedido.direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="35" y="76" width="52" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oPedido.oCiudad.nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="6" y="49" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="58" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="67" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Direccion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="6" y="76" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Ciudad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="98" width="43" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Producto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="47" y="98" width="43" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="94" y="98" width="43" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Pre. Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="98" width="43" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Sub. Total]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement x="47" y="0" width="43" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{cant}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="0" width="43" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{preUni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="0" width="43" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{subTotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="0" width="43" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{oProducto.nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="77" splitType="Stretch">
+			<textField>
+				<reportElement x="150" y="11" width="29" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{oPedido.importe}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="11" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Efectivo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="121" y="31" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Vuelto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="21" width="29" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{oPedido.pago}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="31" width="29" height="10"/>
+				<textElement>
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{oPedido.vuelto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="121" y="21" width="29" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Pago]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="46" width="79" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Gracias por comprar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="59" width="79" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[en Fast Food]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

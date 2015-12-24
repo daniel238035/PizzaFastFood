@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Mapeadores.DetallePedidoMapeador">    
+    
+    <resultMap id="resultPedido" type="Entidades.DetallePedido">
+        <id property="id" column="tb_detallepedido_id"></id>
+        <result property="cant" column="tb_detallepedido_can"></result>
+        <result property="preUni" column="tb_detallepedido_preuni"></result>
+        <result property="subTotal" column="tb_detallepedido_subtot"></result>
+        <association property="oPedido" javaType="Entidades.Pedido">
+            <id property="id" column="tb_pedido_id"></id>
+            <result property="fech_hor" column="tb_pedido_fechor"></result>
+            <result property="cliente" column="tb_pedido_cli"></result>
+            <result property="direccion" column="tb_pedido_dir"></result>
+            <result property="importe" column="tb_pedido_imp"></result>
+            <result property="pago" column="tb_pedido_pag"></result>
+            <result property="vuelto" column="tb_pedido_vue"></result>
+            <association property="oCiudad" javaType="Entidades.Ciudad">
+                <id property="id" column="tb_ciudad_id"></id>
+                <result property="nombre" column="tb_ciudad_nom"></result>
+            </association>
+        </association>
+        <association property="oProducto" javaType="Entidades.Producto">
+            <id property="id" column="tb_producto_id"></id>
+            <result property="nombre" column="tb_producto_nom"></result>
+        </association>
+    </resultMap>
+    
+    <select id="SeleccionarPorPedido" parameterType="Integer" resultMap="resultPedido">
+        select
+        tb_detallepedido.tb_detallepedido_id,
+        tb_detallepedido.tb_detallepedido_can,
+        tb_detallepedido.tb_detallepedido_preuni,
+        tb_detallepedido.tb_detallepedido_subtot,
+        tb_pedido.tb_pedido_id,
+        tb_pedido.tb_pedido_fechor,
+        tb_pedido.tb_pedido_cli,
+        tb_pedido.tb_pedido_dir,
+        tb_pedido.tb_pedido_imp,
+        tb_pedido.tb_pedido_pag,
+        tb_pedido.tb_pedido_vue,
+        tb_ciudad.tb_ciudad_id,
+        tb_ciudad.tb_ciudad_nom,
+        tb_producto.tb_producto_id,
+        tb_producto.tb_producto_nom
+        from tb_detallepedido
+        inner join tb_pedido on tb_detallepedido.tb_pedido_id = tb_pedido.tb_pedido_id
+        inner join tb_ciudad on tb_pedido.tb_ciudad_id = tb_ciudad.tb_ciudad_id
+        inner join tb_producto on tb_detallepedido.tb_producto_id = tb_producto.tb_producto_id
+        where tb_pedido.tb_pedido_id = #{Id}
+        order by 
+        tb_detallepedido.tb_detallepedido_id asc
+    </select>
+    
+    <insert id="registrarDetallePedido" parameterType="Entidades.DetallePedido">
+        insert into tb_detallepedido(
+        tb_detallepedido_can,
+	tb_detallepedido_preuni,
+	tb_detallepedido_subtot,
+	tb_pedido_id,
+        tb_producto_id
+        )
+        values(
+        #{cant},
+        #{preUni},
+        #{subTotal},
+        #{oPedido.id},
+        #{oProducto.id}
+        )
+    </insert>
+   
+    <delete id="eliminarDetalles" parameterType="Integer">
+        delete from tb_detallepedido 
+        where tb_pedido_id = #{id} 
+    </delete>
+    
+    
+    
+     
+
+</mapper>
